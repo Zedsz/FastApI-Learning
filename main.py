@@ -22,7 +22,7 @@ async def read_user(user_id: int = Path(..., title="The ID of the user to get", 
 async def read_author(user_name: str = Path(..., title="The name of the user to get", min_length=2, max_length=10)):
     return {f"作者是{user_name}"}
 
-@app.get("news/news_list")
+@app.get("/news/news_list")
 async def read_news_list(skip: int = Query(0, description="The number of items to skip before returning the first item", ge=0), limit: int = Query(10, description="The number of items to return", ge=0)):
     return {"skip": skip, "limit": limit}
 
