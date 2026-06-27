@@ -1,4 +1,5 @@
 from fastapi import FastAPI,Path,Query
+from pydantic import BaseModel,Field
 
 #创建FastAPI实例
 app = FastAPI()
@@ -24,3 +25,11 @@ async def read_author(user_name: str = Path(..., title="The name of the user to 
 @app.get("news/news_list")
 async def read_news_list(skip: int = Query(0, description="The number of items to skip before returning the first item", ge=0), limit: int = Query(10, description="The number of items to return", ge=0)):
     return {"skip": skip, "limit": limit}
+
+class User(BaseModel):
+    username: str = Field(default="张三", description="The username of the user", min_length=2, max_length=10)
+    password: str = Field(default="123456", description="The password of the user")
+
+@app.post("/register/")
+async def register(user: User):
+    return user
