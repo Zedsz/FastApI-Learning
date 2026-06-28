@@ -1,8 +1,19 @@
 from fastapi import FastAPI,Path,Query
 from pydantic import BaseModel,Field
 
+# 导入各学习模块的路由器
+from exception_response_handling import router as exception_router
+from middleware import router as middleware_router, register_middleware
+
 #创建FastAPI实例
 app = FastAPI()
+
+# 注册中间件
+register_middleware(app)
+
+# 挂载各模块的路由器
+app.include_router(exception_router)
+app.include_router(middleware_router)
 
 
 @app.get("/")
@@ -33,3 +44,7 @@ class User(BaseModel):
 @app.post("/register/")
 async def register(user: User):
     return user
+
+@app.get("/username/{user_name}",response_model=User)
+async def read_user(user_name: str = Path(..., title="The name of the user to get", min_length=2, max_length=10)):
+    return {"username": user_name, "password": f"{user_name}123"}
